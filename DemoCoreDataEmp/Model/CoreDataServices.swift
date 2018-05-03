@@ -13,32 +13,40 @@ class CoreDataServices {
     
     static var shared: CoreDataServices = CoreDataServices()
     
-    private var _student: [Student]?
+    private var _students: [Student]?
     
-    var student: [Student] {
+    var students: [Student] {
         get {
-            if _student == nil {
+            if _students == nil {
                 fetchData()
             }
-            return _student ?? []
+            return _students ?? []
         }
         
         set {
-            _student = newValue
+            _students = newValue
         }
         
     }
     
     private func fetchData() {
-        _student = try? AppDelegate.context.fetch(Student.fetchRequest())
+        _students = try? AppDelegate.context.fetch(Student.fetchRequest())
     }
     
     func removeData() {
-        _student = nil
+        _students = nil
     }
     
-    func addNewStudent(std: Student) {
-        _student?.append(std)
+    func addNewStudent(name: String?, age: Int?, address: String?, image: UIImage?) {
+        let student = Student(context: AppDelegate.context)
+        student.name = name
+        if age != nil {
+            student.age = Int32(age!)
+        }
+        student.address = address
+        student.imageStd = image
+        AppDelegate.saveContext()
+        fetchData()
     }
     
 //    var fetchResultsController: NSFetchedResultsController<Student> {
