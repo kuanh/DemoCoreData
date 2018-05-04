@@ -104,20 +104,23 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="uJ3-hF-UGa">
                                 <rect key="frame" x="10" y="104" width="355" height="469"/>
                                 <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="PlC-Cj-ICK">
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter your name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="PlC-Cj-ICK">
                                         <rect key="frame" x="0.0" y="0.0" width="355" height="30"/>
+                                        <color key="backgroundColor" red="0.82455207519999996" green="0.82455207519999996" blue="0.82455207519999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="J36-aD-QhJ">
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter your age" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="J36-aD-QhJ">
                                         <rect key="frame" x="0.0" y="38" width="355" height="30"/>
+                                        <color key="backgroundColor" red="0.82455207519999996" green="0.82455207519999996" blue="0.82455207519999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fMM-6v-02S">
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter your address" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fMM-6v-02S">
                                         <rect key="frame" x="0.0" y="76" width="355" height="30"/>
+                                        <color key="backgroundColor" red="0.82455207519999996" green="0.82455207519999996" blue="0.82455207519999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
@@ -146,7 +149,7 @@
                     <navigationItem key="navigationItem" title="Title" id="gHF-kX-M95">
                         <barButtonItem key="rightBarButtonItem" systemItem="save" id="dni-M7-9hh">
                             <connections>
-                                <segue destination="m23-Qx-5le" kind="unwind" identifier="saveInfo" unwindAction="unwindFor:" id="ohm-hH-UUm"/>
+                                <segue destination="m23-Qx-5le" kind="unwind" unwindAction="unwindFor:" id="Psl-7J-Fuq"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

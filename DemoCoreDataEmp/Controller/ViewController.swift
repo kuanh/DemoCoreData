@@ -21,11 +21,7 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         configureView()
     }
     
-    var student: Student? {
-        didSet {
-            configureView()
-        }
-    }
+    var student: Student?
     
     func configureView() {
         if let std = student {
@@ -58,46 +54,26 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
     
     // MARK: Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let name = txtName, let age = txtAge, let address = txtAddress {
-            let context = CoreDataServices.shared.fetchResultsController.managedObjectContext
-            let newStudent = Student(context: context)
-            if let list = student {
-                list.name = name.text
-                list.age = Int32(age.text!)!
-                list.address = address.text
-                list.imageStd = viewPhoto.image
+        if let masterViewController = segue.destination as? StudentTableViewController {
+            let context = masterViewController.fetchResult.managedObjectContext
+            if let indexPath = masterViewController.tableView.indexPathForSelectedRow {
+                student = masterViewController.fetchResult.object(at: indexPath)
             } else {
-                newStudent.name = txtName.text
-                newStudent.age = Int32(txtAge.text!)!
-                newStudent.address = txtAddress.text
-                newStudent.imageStd = viewPhoto.image
+                student = Student(context: context)
             }
+            student?.name = txtName.text
+            student?.age = Int32(txtAge.text!)!
+            student?.address = txtAddress.text
+            student?.imageStd = viewPhoto.image
+            // Save the context.
             do {
                 try context.save()
-            }catch  {
-                fatalError("\(error)")
+            } catch {
+                let nserror = error as NSError
+                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
-            
         }
-//        if let masterViewController = segue.destination as? StudentTableViewController, let std = student {
-//            let context = CoreDataServices.shared.fetchResultsController.managedObjectContext
-//            if let indexPath = masterViewController.tableView.indexPathForSelectedRow {
-//                var updateStudent = CoreDataServices.shared.fetchResultsController.object(at: indexPath)
-//                updateStudent = std
-//                masterViewController.tableView.reloadRows(at: [indexPath], with: .none)
-//            } else {
-//                let newStudent = Student(context: context)
-//                newStudent.name = txtName.text
-//                newStudent.age = Int32(txtAge.text!)!
-//                newStudent.address = txtAddress.text
-//                newStudent.imageStd = viewPhoto.image
-//            }
-//            do {
-//                try context.save()
-//            }catch  {
-//                fatalError("\(error)")
-//            }
-//        }
+        
     }
 
 

@@ -15,9 +15,8 @@ class StudentTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchResult = CoreDataServices.shared.fetchResultsController
+        fetchResult.delegate = self
     }
-
     // MARK: - Table view data source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -47,26 +46,26 @@ class StudentTableViewController: UITableViewController {
         cell.imageStd.image = student.imageStd as? UIImage
     }
     
-
-    /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
         return true
     }
-    */
-
-    /*
+    
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
+            let context = fetchResult.managedObjectContext
+            context.delete(fetchResult.object(at: indexPath))
+            do {
+                try context.save()
+            } catch {
+                print("error")
+            }
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
     }
-    */
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -80,32 +79,14 @@ class StudentTableViewController: UITableViewController {
     }
     
     @IBAction func unwind(for unwindSegue: UIStoryboardSegue) {
-        fetchResult = CoreDataServices.shared.fetchResultsController
-        if let vc = unwindSegue.source as? ViewController {
-            if let indexPath = tableView.indexPathForSelectedRow, let listStd = vc.student {
-                var _object = fetchResult.object(at: indexPath)
-                _object = listStd
-                tableView.reloadRows(at: [indexPath], with: .none)
-            }
-        }
-        tableView.reloadData()
+        
     }
 }
 
-extension StudentTableViewController {
+extension StudentTableViewController: NSFetchedResultsControllerDelegate {
+    
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.beginUpdates()
-    }
-    
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        switch type {
-        case .insert:
-            tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
-        case .delete:
-            tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
-        default:
-            return
-        }
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
