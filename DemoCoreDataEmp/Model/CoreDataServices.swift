@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class CoreDataServices: NSObject, NSFetchedResultsControllerDelegate {
+class CoreDataServices {
     
     static var shared: CoreDataServices = CoreDataServices()
     
@@ -48,33 +48,5 @@ class CoreDataServices: NSObject, NSFetchedResultsControllerDelegate {
         AppDelegate.saveContext()
         fetchData()
     }
-    
-//    var fetchResultsController: NSFetchedResultsController<Student> {
-//
-//        if _fetchResultsController != nil {
-//            return _fetchResultsController!
-//        }
-//
-//        let fetchRequest: NSFetchRequest<Student> = Student.fetchRequest()
-//        fetchRequest.fetchBatchSize = 20
-//
-//        let nameStdSort = NSSortDescriptor(key: "name", ascending: false)
-//        let ageStdSort = NSSortDescriptor(key: "age", ascending: false)
-//        let addressStdSort = NSSortDescriptor(key: "address", ascending: false)
-//        let imageStdSort = NSSortDescriptor(key: "imageStd", ascending: false)
-//        fetchRequest.sortDescriptors = [nameStdSort,ageStdSort,addressStdSort,imageStdSort]
-//
-//        let aFetchResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: AppDelegate.context, sectionNameKeyPath: nil, cacheName: "Master")
-//        aFetchResultsController.delegate = self
-//        _fetchResultsController = aFetchResultsController
-//        do {
-//            try _fetchResultsController?.performFetch()
-//        } catch let error as NSError {
-//            print("\(error), \(error.userInfo)")
-//        }
-//        return _fetchResultsController!
-//    }
-//
-//    var _fetchResultsController: NSFetchedResultsController<Student>? = nil
     
 }
