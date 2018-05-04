@@ -28,10 +28,12 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
     
     func configureView() {
         if let std = student {
-            txtName.text = std.name?.description
-            txtAge.text = "\(std.age)"
-            txtAddress.text = std.address?.description
-            viewPhoto.image = std.imageStd as? UIImage
+            if let name = txtName, let age = txtAge, let address = txtAddress {
+                name.text = std.name?.description
+                age.text = "\(std.age)"
+                address.text = std.address?.description
+                viewPhoto.image = std.imageStd as? UIImage
+            }
         }
     }
     
@@ -58,6 +60,11 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
         if let masterViewController = segue.destination as? StudentTableViewController {
             if let indexPath = masterViewController.tableView.indexPathForSelectedRow {
                 
+                masterViewController.coreDataServices[indexPath.row].name = txtName.text
+                masterViewController.coreDataServices[indexPath.row].age = Int32(txtAge.text!)!
+                masterViewController.coreDataServices[indexPath.row].address = txtAddress.text
+                masterViewController.coreDataServices[indexPath.row].imageStd = viewPhoto.image
+                AppDelegate.saveContext()
             } else {
                 guard txtName.text != "" else { return }
                 CoreDataServices.shared.addNewStudent(name: txtName.text, age: Int(txtAge.text ?? ""), address: txtAddress.text, image: viewPhoto.image)
@@ -67,4 +74,5 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
 
 
 }
+
 
