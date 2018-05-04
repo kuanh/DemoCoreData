@@ -7,35 +7,44 @@
 //
 
 import UIKit
+import CoreData
 
 class StudentTableViewController: UITableViewController {
 
-    var coreDataServices = CoreDataServices.shared.students
+    var fetchResult = CoreDataServices.shared.fetchResultsController
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.reloadData()
+        fetchResult = CoreDataServices.shared.fetchResultsController
     }
 
     // MARK: - Table view data source
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return fetchResult.sections?.count ?? 0
+    }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return coreDataServices.count
+        return fetchResult.sections![section].numberOfObjects
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! StudentTableViewCell
 
-        let image = coreDataServices[indexPath.row].imageStd as? UIImage
+        let arrayStudent = fetchResult.object(at: indexPath)
         
-        cell.lbName.text = coreDataServices[indexPath.row].name
-        cell.lbAge.text = "\(coreDataServices[indexPath.row].age)"
-        cell.lbAddress.text = coreDataServices[indexPath.row].address
-        cell.imageStd.image = image
-
+        configureCell(cell, withEvent: arrayStudent)
+        
         return cell
+    }
+    
+    func configureCell(_ cell: StudentTableViewCell, withEvent student: Student) {
+        cell.lbName.text = student.name?.description
+        cell.lbAge.text = "\(student.age)"
+        cell.lbAddress.text = student.address?.description
+        cell.imageStd.image = student.imageStd as? UIImage
     }
     
 
@@ -65,15 +74,55 @@ class StudentTableViewController: UITableViewController {
         if segue.identifier == "showInfo" {
             if let indexPath = tableView.indexPathForSelectedRow {
                 let vc = segue.destination as? ViewController
-                vc?.student = coreDataServices[indexPath.row]
+                vc?.student = fetchResult.object(at: indexPath)
             }
         }
     }
     
     @IBAction func unwind(for unwindSegue: UIStoryboardSegue) {
-        coreDataServices = CoreDataServices.shared.students
+        fetchResult = CoreDataServices.shared.fetchResultsController
+        if let vc = unwindSegue.source as? ViewController {
+            if let indexPath = tableView.indexPathForSelectedRow, let listStd = vc.student {
+                var _object = fetchResult.object(at: indexPath)
+                _object = listStd
+                tableView.reloadRows(at: [indexPath], with: .none)
+            }
+        }
         tableView.reloadData()
     }
-    
+}
 
+extension StudentTableViewController {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.beginUpdates()
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+        switch type {
+        case .insert:
+            tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
+        case .delete:
+            tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
+        default:
+            return
+        }
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            tableView.insertRows(at: [newIndexPath!], with: .fade)
+        case .delete:
+            tableView.deleteRows(at: [indexPath!], with: .fade)
+        case .update:
+            configureCell(tableView.cellForRow(at: indexPath!)! as! StudentTableViewCell, withEvent: anObject as! Student)
+        case .move:
+            configureCell(tableView.cellForRow(at: indexPath!)! as! StudentTableViewCell, withEvent: anObject as! Student)
+            tableView.moveRow(at: indexPath!, to: newIndexPath!)
+        }
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.endUpdates()
+    }
 }

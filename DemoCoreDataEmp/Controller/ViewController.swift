@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class ViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 
@@ -28,10 +29,12 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
     
     func configureView() {
         if let std = student {
-            txtName.text = std.name?.description
-            txtAge.text = "\(std.age)"
-            txtAddress.text = std.address?.description
-            viewPhoto.image = std.imageStd as? UIImage
+            if let name = txtName, let age = txtAge, let address = txtAddress {
+                name.text = std.name?.description
+                age.text = "\(std.age)"
+                address.text = std.address?.description
+                viewPhoto.image = std.imageStd as? UIImage
+            }
         }
     }
     
@@ -55,14 +58,46 @@ class ViewController: UIViewController, UINavigationControllerDelegate, UIImageP
     
     // MARK: Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let masterViewController = segue.destination as? StudentTableViewController {
-            if let indexPath = masterViewController.tableView.indexPathForSelectedRow {
-                
+        if let name = txtName, let age = txtAge, let address = txtAddress {
+            let context = CoreDataServices.shared.fetchResultsController.managedObjectContext
+            let newStudent = Student(context: context)
+            if let list = student {
+                list.name = name.text
+                list.age = Int32(age.text!)!
+                list.address = address.text
+                list.imageStd = viewPhoto.image
             } else {
-                guard txtName.text != "" else { return }
-                CoreDataServices.shared.addNewStudent(name: txtName.text, age: Int(txtAge.text ?? ""), address: txtAddress.text, image: viewPhoto.image)
+                newStudent.name = txtName.text
+                newStudent.age = Int32(txtAge.text!)!
+                newStudent.address = txtAddress.text
+                newStudent.imageStd = viewPhoto.image
             }
+            do {
+                try context.save()
+            }catch  {
+                fatalError("\(error)")
+            }
+            
         }
+//        if let masterViewController = segue.destination as? StudentTableViewController, let std = student {
+//            let context = CoreDataServices.shared.fetchResultsController.managedObjectContext
+//            if let indexPath = masterViewController.tableView.indexPathForSelectedRow {
+//                var updateStudent = CoreDataServices.shared.fetchResultsController.object(at: indexPath)
+//                updateStudent = std
+//                masterViewController.tableView.reloadRows(at: [indexPath], with: .none)
+//            } else {
+//                let newStudent = Student(context: context)
+//                newStudent.name = txtName.text
+//                newStudent.age = Int32(txtAge.text!)!
+//                newStudent.address = txtAddress.text
+//                newStudent.imageStd = viewPhoto.image
+//            }
+//            do {
+//                try context.save()
+//            }catch  {
+//                fatalError("\(error)")
+//            }
+//        }
     }
 
 
